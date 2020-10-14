@@ -15,7 +15,8 @@ class InGame extends AppWindow {
     gameMode: null,
     userId: null,
     matchId: null,
-    kills: null
+    kills: null,
+    username: null,
   };
   private static _instance: InGame;
   private _fortniteGameEventsListener: OWGamesEvents;
@@ -52,26 +53,30 @@ class InGame extends AppWindow {
 
   private async onInfoUpdates(info) {
     if (info['match_info']) {
-      if (info['match_info']['mode']) {
+      if (info['match_info']['mode'])
         this._info.gameMode = info['match_info']['mode'];
-      }
-      if (info['match_info']['userID']) {
+
+      if (info['match_info']['userID'])
         this._info.userId = info['match_info']['userID'];
-      }
-      if (info['match_info']['matchID']) {
+
+      if (info['match_info']['matchID'])
         this._info.matchId = info['match_info']['matchID'];
-      }
-      if (info['match_info']['kills']) {
+
+      if (info['match_info']['kills']) 
         this._info.kills = info['match_info']['kills'];
-      }
     }
+    if (info['username'])
+      this._info.username = info['username'];
+    
     this.logLine(this._infoLog, info, false);
 
-    await axios({
-      method: 'post',
-      url: 'http://192.168.0.80:8080/api/overwolf/fortnite/saveMatchByUser',
-      params: this._info
-    });
+    if (!Object.values(this._info).includes(null)) {
+      await axios({
+        method: 'post',
+        url: 'http://192.168.0.80:8080/api/overwolf/fortnite/saveMatchByUser',
+        params: this._info
+      });
+    }
   }
 
   // Special events will be highlighted in the event log

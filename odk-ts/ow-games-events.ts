@@ -24,6 +24,12 @@ export class OWGamesEvents {
     })
   }
 
+  public async getCurrentUser(): Promise<any> {
+    return new Promise((resolve) => {
+      overwolf.profile.getCurrentUser(resolve);
+    })
+  }
+
   private async setRequiredFeatures(): Promise<boolean> {
     let tries:number = 1,
         result;
@@ -45,7 +51,6 @@ export class OWGamesEvents {
       tries++;
     }
 
-    console.warn('setRequiredFeatures(): failure after '+ tries +' tries'+ JSON.stringify(result, null, 2));
     return false;
   }
 
@@ -76,8 +81,11 @@ export class OWGamesEvents {
     await this.setRequiredFeatures();
 
     const { res, status } = await this.getInfo();
+    const { username, status: userStatus } = await this.getCurrentUser();
 
     if ( res && status === 'success' ) {
+      if ( username && userStatus === 'success' )
+        res.username = username;
       this.onInfoUpdates({ info: res });
     }
   }
