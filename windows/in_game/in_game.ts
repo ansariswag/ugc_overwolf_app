@@ -73,7 +73,7 @@ class InGame extends AppWindow {
     if (!Object.values(this._info).includes(null)) {
       await axios({
         method: 'post',
-        url: 'http://192.168.0.80:8080/api/overwolf/fortnite/saveMatchByUser',
+        url: 'https://www.ugcesports.gg/api/overwolf/fortnite/saveMatchByUser',
         params: this._info
       });
     }
